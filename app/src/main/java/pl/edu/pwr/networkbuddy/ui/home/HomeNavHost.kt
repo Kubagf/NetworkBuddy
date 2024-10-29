@@ -9,8 +9,7 @@ import androidx.navigation.compose.rememberNavController
 fun HomeNavHost() {
     val navController = rememberNavController()
     NavHost(
-        navController = navController,
-        startDestination = "homeScreen"
+        navController = navController, startDestination = "homeScreen"
     ) {
         composable("homeScreen") { HomeScreen(navController) }
     }

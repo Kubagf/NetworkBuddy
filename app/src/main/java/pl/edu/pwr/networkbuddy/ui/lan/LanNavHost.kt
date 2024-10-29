@@ -6,11 +6,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun LanNavHost(){
+fun LanNavHost() {
     val navController = rememberNavController()
     NavHost(
-        navController = navController,
-        startDestination = "lanScreen"
+        navController = navController, startDestination = "lanScreen"
     ) {
         composable("lanScreen") { LanScreen() }
     }
