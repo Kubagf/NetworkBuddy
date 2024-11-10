@@ -21,7 +21,7 @@ fun LanScreen() {
                 .fillMaxSize()
                 .padding(it)
         ) {
-            Text("Local IP: ")
+
         }
     }
 }

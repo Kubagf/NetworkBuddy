@@ -15,6 +15,7 @@ import pl.edu.pwr.networkbuddy.ui.home.HomeNavHost
 import pl.edu.pwr.networkbuddy.ui.lan.LanNavHost
 import pl.edu.pwr.networkbuddy.ui.navBar.NavBar
 import pl.edu.pwr.networkbuddy.ui.theme.NetworkBuddyTheme
+import pl.edu.pwr.networkbuddy.ui.tools.ToolsNavHost
 import pl.edu.pwr.networkbuddy.ui.wireless.WirelessNavHost
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +24,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NetworkBuddyTheme {
-                val pagerState = rememberPagerState(pageCount = { 3 })
+                val pagerState = rememberPagerState(pageCount = { 4 })
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = { NavBar(pagerState) }) { innerPadding ->
@@ -36,6 +37,7 @@ class MainActivity : ComponentActivity() {
                                 0 -> HomeNavHost()
                                 1 -> WirelessNavHost()
                                 2 -> LanNavHost()
+                                3 -> ToolsNavHost()
                             }
                         }
                     }

@@ -21,7 +21,7 @@ import pl.edu.pwr.networkbuddy.R
 @Composable
 fun NavBar(pagerState: PagerState) {
     val coroutineScope = rememberCoroutineScope()
-    val items = listOf("Home", "Wireless", "Lan", "Tools")
+    val items = listOf("Home", "Wireless", "LAN", "Tools")
     val selectedIcons = listOf(
         Icons.Filled.Home, R.drawable.baseline_network_wifi_4_bar_24, Icons.Filled.Star, Icons.Filled.Star
     )
