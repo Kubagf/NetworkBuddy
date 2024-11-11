@@ -1,4 +1,4 @@
-package pl.edu.pwr.networkbuddy.ui.lan
+package pl.edu.pwr.networkbuddy.ui.calc
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,11 +13,12 @@ import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LanScreen() {
+fun CalcScreen() {
     Scaffold(topBar = {
         TopAppBar(title = {
             Text(
-                text = "LAN", style = MaterialTheme.typography.titleLarge
+                text = "Calculator",
+                style = MaterialTheme.typography.titleLarge,
             )
         })
     }) {

@@ -60,16 +60,15 @@ fun WirelessScreen(navController: NavHostController? = null) {
 
     Scaffold(topBar = {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp),
+            modifier = Modifier.padding(16.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = "Wireless",
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(2f)
             )
-
             Button(
                 onClick = {
                     selectedBand = when (selectedBand) {
@@ -79,13 +78,18 @@ fun WirelessScreen(navController: NavHostController? = null) {
                         "6 GHz" -> "All"
                         else -> "All"
                     }
-                }, modifier = Modifier.padding(start = 8.dp)
+                }, modifier = Modifier
+                    .padding(start = 8.dp)
+                    .weight(1f)
             ) {
                 Text(selectedBand)
             }
         }
     }) {
-        Box(modifier = Modifier.padding(it)) {
+        Box(
+            modifier = Modifier
+                .padding(it)
+        ) {
             if (hasLocationPermission) {
                 WifiScanner(selectedBand)
             } else {

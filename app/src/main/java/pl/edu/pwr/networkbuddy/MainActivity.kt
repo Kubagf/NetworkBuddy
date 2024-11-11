@@ -11,6 +11,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import pl.edu.pwr.networkbuddy.ui.calc.CalcNavHost
 import pl.edu.pwr.networkbuddy.ui.home.HomeNavHost
 import pl.edu.pwr.networkbuddy.ui.lan.LanNavHost
 import pl.edu.pwr.networkbuddy.ui.navBar.NavBar
@@ -24,7 +25,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NetworkBuddyTheme {
-                val pagerState = rememberPagerState(pageCount = { 4 })
+                val pagerState = rememberPagerState(pageCount = { 5 })
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = { NavBar(pagerState) }) { innerPadding ->
@@ -38,6 +39,7 @@ class MainActivity : ComponentActivity() {
                                 1 -> WirelessNavHost()
                                 2 -> LanNavHost()
                                 3 -> ToolsNavHost()
+                                4 -> CalcNavHost()
                             }
                         }
                     }

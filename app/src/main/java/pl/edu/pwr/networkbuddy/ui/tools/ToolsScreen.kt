@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -34,7 +35,11 @@ fun ToolsScreen() {
     var selectedOption by rememberSaveable { mutableStateOf<String?>(null) }
 
     Scaffold(topBar = {
-        TopAppBar(title = { Text("Tools") })
+        TopAppBar(title = {
+            Text(
+                text = "Tools", style = MaterialTheme.typography.titleLarge
+            )
+        })
     }) { it ->
         Box(
             Modifier
