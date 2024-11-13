@@ -2,6 +2,7 @@ package pl.edu.pwr.networkbuddy.ui.tools
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -34,7 +35,7 @@ fun ToolsScreen() {
     var output by rememberSaveable { mutableStateOf("") }
     var selectedOption by rememberSaveable { mutableStateOf<String?>(null) }
 
-    Scaffold(topBar = {
+    Scaffold(contentWindowInsets = WindowInsets(0.dp), topBar = {
         TopAppBar(title = {
             Text(
                 text = "Tools", style = MaterialTheme.typography.titleLarge

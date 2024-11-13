@@ -44,7 +44,7 @@ fun NavBar(pagerState: PagerState) {
                 }
             }, label = { Text(item) }, selected = pagerState.currentPage == index, onClick = {
                 coroutineScope.launch {
-                    pagerState.scrollToPage(index)
+                    pagerState.animateScrollToPage(index)
                 }
             })
         }
