@@ -1,6 +1,8 @@
 package pl.edu.pwr.networkbuddy.ui.wireless
 
 import android.net.wifi.ScanResult
+import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,13 +19,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import pl.edu.pwr.networkbuddy.R
+import pl.edu.pwr.networkbuddy.util.calculateChannel
 
 @Composable
 fun WifiCard(result: ScanResult) {
+    val clipboardManager = LocalClipboardManager.current
+    val context = LocalContext.current
+
     val signalStrengthIcon = when {
         result.level >= -50 -> R.drawable.baseline_network_wifi_4_bar_24
         result.level in -70..-51 -> R.drawable.baseline_network_wifi_3_bar_24
@@ -52,11 +61,15 @@ fun WifiCard(result: ScanResult) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(
-                    text = result.SSID.ifEmpty { "(Hidden SSID)" },
+                Text(text = result.SSID.ifEmpty { "(Hidden SSID)" },
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clickable {
+                        clipboardManager.setText(AnnotatedString(result.SSID.ifEmpty { "(Hidden SSID)" }))
+                        Toast.makeText(
+                            context, "SSID copied to clipboard", Toast.LENGTH_SHORT
+                        ).show()
+                    })
                 Icon(
                     painter = painterResource(id = signalStrengthIcon),
                     contentDescription = "Signal Strength",
@@ -66,8 +79,18 @@ fun WifiCard(result: ScanResult) {
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "BSSID: ${result.BSSID}", style = MaterialTheme.typography.bodySmall)
-                Text(text = "${result.frequency} MHz", style = MaterialTheme.typography.bodySmall)
+                Text(text = "BSSID: ${result.BSSID}",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.clickable {
+                        clipboardManager.setText(AnnotatedString(result.BSSID))
+                        Toast.makeText(
+                            context, "BSSID copied to clipboard", Toast.LENGTH_SHORT
+                        ).show()
+                    })
+                Text(
+                    text = "Freq: ${result.frequency} MHz",
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
@@ -75,6 +98,13 @@ fun WifiCard(result: ScanResult) {
                 Text(
                     text = "Level: ${result.level} dBm", style = MaterialTheme.typography.bodySmall
                 )
+
+                val channel = calculateChannel(result.frequency)
+                Text(
+                    text = "Ch: ${if (channel == -1) "Unknown" else channel}",
+                    style = MaterialTheme.typography.bodySmall
+                )
+
                 val channelWidthText = when (result.channelWidth) {
                     ScanResult.CHANNEL_WIDTH_20MHZ -> "20 MHz"
                     ScanResult.CHANNEL_WIDTH_40MHZ -> "40 MHz"
@@ -92,11 +122,18 @@ fun WifiCard(result: ScanResult) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "Security: ${result.capabilities}",
+                Text(text = "Capabilities:\n${result.capabilities}",
                     style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.weight(1f)
-                )
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable {
+                            clipboardManager.setText(AnnotatedString(result.capabilities))
+                            Toast
+                                .makeText(
+                                    context, "SSID copied to clipboard", Toast.LENGTH_SHORT
+                                )
+                                .show()
+                        })
                 if (result.capabilities.contains("WPA") || result.capabilities.contains("WEP")) {
                     Icon(
                         imageVector = Icons.Outlined.Lock,

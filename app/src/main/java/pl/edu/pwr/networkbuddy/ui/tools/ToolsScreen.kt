@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -26,12 +28,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.net.InetAddress
+import pl.edu.pwr.networkbuddy.util.executeDnsLookup
+import pl.edu.pwr.networkbuddy.util.executePing
+import pl.edu.pwr.networkbuddy.util.executePortScan
+import pl.edu.pwr.networkbuddy.util.executeTraceroute
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -124,6 +129,7 @@ fun ToolsScreen() {
                         modifier = Modifier
                             .padding(8.dp)
                             .weight(2f)
+                            .clip(RoundedCornerShape(4.dp))
                     )
                     if (selectedIndex == 3) {
                         TextField(
@@ -131,101 +137,32 @@ fun ToolsScreen() {
                             onValueChange = { port = it },
                             label = { Text("Port") },
                             modifier = Modifier
-                                .padding(8.dp)
+                                .padding(end = 8.dp, top = 8.dp, bottom = 8.dp)
                                 .weight(1f)
+                                .clip(RoundedCornerShape(4.dp))
                         )
                     }
                 }
-                LazyColumn(
-                    modifier = Modifier
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .fillMaxSize()
-                        .padding(start = 8.dp, end = 8.dp, top = 8.dp)
+                Card(
+                    Modifier.fillMaxSize()
                 ) {
-                    item {
-                        Text(
-                            text = output,
-                            modifier = Modifier.padding(8.dp),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                    LazyColumn(
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .fillMaxSize()
+                            .padding(start = 8.dp, end = 8.dp, top = 8.dp)
+                    ) {
+                        item {
+                            Card { }
+                            Text(
+                                text = output,
+                                modifier = Modifier.padding(8.dp),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                     }
                 }
             }
-        }
-    }
-}
-
-suspend fun executePing(host: String): String {
-    return executeCommand("ping -c 4 $host")
-}
-
-suspend fun executeTraceroute(host: String): String {
-    return try {
-        withContext(Dispatchers.IO) {
-            val hops = mutableListOf<String>()
-            var reachedDestination = false
-
-            for (ttl in 1..30) {
-                val command = "ping -c 1 -t $ttl $host"
-                val result = executeCommand(command)
-                val hopInfo = when {
-                    result.contains("Time to live exceeded") -> {
-                        val from = result.substringAfter("From ").substringBefore(":").trim()
-                        "Hop $ttl: $from"
-                    }
-
-                    else -> "Hop $ttl: *"
-                }
-                hops.add(hopInfo)
-                if (result.contains("time=")) {
-                    reachedDestination = true
-                    break
-                }
-            }
-            if (!reachedDestination) {
-                hops.add("Destination not reached within 30 hops")
-            }
-            hops.joinToString(separator = "\n")
-        }
-    } catch (e: Exception) {
-        "Error executing traceroute"
-    }
-}
-
-suspend fun executeDnsLookup(host: String): String {
-    return try {
-        val address = withContext(Dispatchers.IO) {
-            InetAddress.getByName(host)
-        }
-        "Host: ${address.hostName}\nIP Address: ${address.hostAddress}"
-    } catch (e: Exception) {
-        "Error executing DNS lookup"
-    }
-}
-
-suspend fun executePortScan(host: String, port: Int): String {
-    return try {
-        withContext(Dispatchers.IO) {
-            val socket = java.net.Socket()
-            socket.use {
-                it.connect(java.net.InetSocketAddress(host, port), 1000)
-                "Port $port on $host is open."
-            }
-        }
-    } catch (e: Exception) {
-        "Port $port on $host is closed or unreachable."
-    }
-}
-
-suspend fun executeCommand(command: String): String {
-    return withContext(Dispatchers.IO) {
-        try {
-            val process = Runtime.getRuntime().exec(command)
-            val output = process.inputStream.bufferedReader().use { it.readText() }
-            process.waitFor()
-            output.trim()
-        } catch (e: Exception) {
-            "Error executing command"
         }
     }
 }
